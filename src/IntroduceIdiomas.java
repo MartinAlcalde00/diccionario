@@ -1,3 +1,8 @@
+
+import java.awt.Event;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -50,6 +55,11 @@ public class IntroduceIdiomas extends javax.swing.JDialog {
 
         buttonAceptar.setMnemonic('a');
         buttonAceptar.setText("Aceptar");
+        buttonAceptar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonAceptarActionPerformed(evt);
+            }
+        });
 
         buttonCancelar.setMnemonic('c');
         buttonCancelar.setText("Cancelar");
@@ -104,6 +114,12 @@ public class IntroduceIdiomas extends javax.swing.JDialog {
     private void textoIdioma2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textoIdioma2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_textoIdioma2ActionPerformed
+
+    private void buttonAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAceptarActionPerformed
+        ((DiccionarioMain)this.getParent()).setIdioma1(this.textoIdioma1.getText());
+        ((DiccionarioMain)this.getParent()).setIdioma2(this.textoIdioma2.getText());
+        this.dispose();
+    }//GEN-LAST:event_buttonAceptarActionPerformed
 
     /**
      * @param args the command line arguments
