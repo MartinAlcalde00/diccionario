@@ -111,19 +111,19 @@ public class IntroduceIdiomas extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void textoIdioma1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textoIdioma1ActionPerformed
-        this.nombreIdioma1 = this.textoIdioma1.getText();
+        this.nombreIdioma1 = this.textoIdioma1.getText().trim();
     }//GEN-LAST:event_textoIdioma1ActionPerformed
 
     private void textoIdioma2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textoIdioma2ActionPerformed
-        this.nombreIdioma2 = this.textoIdioma2.getText();
+        this.nombreIdioma2 = this.textoIdioma2.getText().trim();
     }//GEN-LAST:event_textoIdioma2ActionPerformed
 
     private void buttonAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAceptarActionPerformed
-        if (!this.textoIdioma1.getText().equals("") && 
-                !this.textoIdioma2.getText().equals("")) {
+        this.textoIdioma1ActionPerformed(evt);
+        this.textoIdioma2ActionPerformed(evt);
+        if (!this.nombreIdioma1.equals("") && 
+                !this.nombreIdioma2.equals("")) {
             this.botonPulsado = ACEPTAR;
-            this.textoIdioma1ActionPerformed(evt);
-            this.textoIdioma2ActionPerformed(evt);
             this.dispose();
         }
     }//GEN-LAST:event_buttonAceptarActionPerformed

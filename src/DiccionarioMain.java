@@ -260,8 +260,8 @@ public class DiccionarioMain extends javax.swing.JFrame {
     private void buttonMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMainActionPerformed
         this.clearMensaje();
         this.clearListas();
-        String palabra1 = this.textoIdioma1.getText();
-        String palabra2 = this.textoIdioma2.getText();
+        String palabra1 = this.textoIdioma1.getText().toLowerCase();
+        String palabra2 = this.textoIdioma2.getText().toLowerCase();
         DefaultListModel listModel1 = new DefaultListModel();
         DefaultListModel listModel2 = new DefaultListModel();
         try {
@@ -298,7 +298,7 @@ public class DiccionarioMain extends javax.swing.JFrame {
                 throw new Exception("Palabras añadidas al diccionario "
                         + "correctamente.");
             } else {
-                throw new Exception("Los campos de texto están ambos vacíos");
+                throw new Exception("Los campos de texto están ambos vacíos.");
             }
         } catch (Exception e) {
             this.actualizaMensajes(e.getMessage());

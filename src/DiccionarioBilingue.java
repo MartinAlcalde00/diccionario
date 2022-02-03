@@ -27,12 +27,12 @@ public class DiccionarioBilingue {
         this.map = new HashMap<>();
         Scanner sc = new Scanner(this.file);
         if (sc.hasNextLine()) {
-            this.idioma1 = sc.nextLine();
+            this.idioma1 = sc.nextLine().trim();
         } else {
            throw new IOException(); 
         } 
         if (sc.hasNextLine()) {
-            this.idioma2 = sc.nextLine();
+            this.idioma2 = sc.nextLine().trim();
         } else {
             throw new IOException();
         }
@@ -43,11 +43,11 @@ public class DiccionarioBilingue {
             String palabra2;
             if (line.startsWith(":")) {
                 palabra1 = "";
-                palabra2 = lineSplitted[0].trim();
+                palabra2 = lineSplitted[0].trim().toLowerCase();
             } else {
-                palabra1 = lineSplitted[0];
+                palabra1 = lineSplitted[0].toLowerCase();
                 if (lineSplitted.length > 1) {
-                    palabra2 = lineSplitted[1].trim();
+                    palabra2 = lineSplitted[1].trim().toLowerCase();
                 } else {
                     palabra2 = "";
                 }
