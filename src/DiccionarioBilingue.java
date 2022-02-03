@@ -1,4 +1,3 @@
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,10 +7,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class DiccionarioBilingue {
+    
     private File file;
     private String idioma1;
     private String idioma2;
@@ -26,79 +24,105 @@ public class DiccionarioBilingue {
 
     public DiccionarioBilingue(File file) throws IOException {
         this.file = file;
+        this.map = new HashMap<>();
         Scanner sc = new Scanner(this.file);
         if (sc.hasNextLine()) {
-            String idioma1 = sc.nextLine();
-            this.idioma1 = idioma1;
-        }
+            this.idioma1 = sc.nextLine();
+        } else {
+           throw new IOException(); 
+        } 
         if (sc.hasNextLine()) {
-            String idioma2 = sc.nextLine();
-            this.idioma2 = idioma2;
+            this.idioma2 = sc.nextLine();
+        } else {
+            throw new IOException();
         }
         while (sc.hasNextLine()) {
-            String line = sc.nextLine();
-            if (!line.startsWith(":")) {
-                String palabra1 = line.split(":")[0];
-                String palabra2 = line.split(":")[1];
-                if (map.get(palabra1) == null) {
-                    map.put(palabra1, new HashSet<>());
+            String line = sc.nextLine().trim();
+            String[] lineSplitted = line.split(":");
+            String palabra1;
+            String palabra2;
+            if (line.startsWith(":")) {
+                palabra1 = "";
+                palabra2 = lineSplitted[0].trim();
+            } else {
+                palabra1 = lineSplitted[0];
+                if (lineSplitted.length > 1) {
+                    palabra2 = lineSplitted[1].trim();
+                } else {
+                    palabra2 = "";
                 }
-                Set<String> conjuntoImagen = map.get(palabra1);
-                conjuntoImagen.add(palabra2);
-                map.put(palabra1, conjuntoImagen);
             }
-        }
+            this.insertar(palabra1, palabra2);
+        } 
     }
 
     public String getIdioma1() {
-        return idioma1;
-    }
-
-    public void setIdioma1(String idioma1) {
-        this.idioma1 = idioma1;
+        return this.idioma1;
     }
 
     public String getIdioma2() {
-        return idioma2;
+        return this.idioma2;
     }
 
-    public void setIdioma2(String idioma2) {
-        this.idioma2 = idioma2;
-    }
-
-    public void cerrar() {
+    public void cerrar() throws IOException, Exception {
         PrintWriter pw;
-        try {
-            pw = new PrintWriter(new FileWriter(this.file));
-            pw.println(this.getIdioma1());
-            pw.println(this.getIdioma2());
-            for (Map.Entry<String, Set<String>> entry : this.map.entrySet()) {
-                String palabra = entry.getKey();
-                for (String palabra2: entry.getValue()) {
-                    pw.println(palabra + ":" + palabra2);
-                }
+        pw = new PrintWriter(new FileWriter(this.file));
+        pw.println(this.getIdioma1());
+        pw.println(this.getIdioma2());
+        for (String palabra1: this.map.keySet()) {
+            Set<String> traducciones = this.map.get(palabra1);
+            if (traducciones.isEmpty()) {
+                pw.println(palabra1 + ":");
             }
-            pw.close();
-        } catch (IOException ex) {
-            Logger.getLogger(DiccionarioBilingue.class.getName()).log(Level.SEVERE, null, ex);
+            for (String palabra2: traducciones) {
+                pw.println(palabra1 + ":" + palabra2);
+            }
         }
+        pw.close();   
     }
 
-    public Set<String> buscarLengua1(String palabra) {
+    public Set<String> buscarLengua1(String palabra) throws Exception {
+        if (this.map.get(palabra) == null) {
+            throw new Exception("La palabra no está registrada en el diccionario.");
+        }
         return this.map.get(palabra);
     }
 
-    public Set<String> buscarLengua2(String palabra) {
-        return this.map.get(palabra);
+    public Set<String> buscarLengua2(String palabra) throws Exception {
+        Set<String> traducciones = new HashSet<>();
+        boolean isRegistrada = false;
+        for (String palabra1: this.map.keySet()) {
+            if (buscarLengua1(palabra1).contains(palabra)) {
+                traducciones.add(palabra1);
+                isRegistrada = true;
+            }   
+        }
+        if (!isRegistrada) {
+            throw new Exception("La palabra no está registrada en el diccionario.");
+        }
+        return traducciones;
     }
 
-    public void insertar(String palabra1, String palabra2) {
-        if (map.get(palabra1) == null) {
-            map.put(palabra1, new HashSet<>());
-        }
-        this.map.get(palabra1).add(palabra2);
-        for (Map.Entry<String, Set<String>> entry : this.map.entrySet()) {
-            System.out.println("clave=" + entry.getKey() + ", valor=" + entry.getValue());
+    public final void insertar(String palabra1, String palabra2) {
+        Set<String> traducciones = this.map.get(palabra1);
+        if (traducciones == null) {
+            traducciones = new HashSet<>();
+            this.map.put(palabra1, traducciones);
+        }   
+        if (!palabra2.equals("")) {
+            traducciones.add(palabra2);
+            Set<String> palabrasLengua2SinTraduccion = this.map.get("");
+            if (palabrasLengua2SinTraduccion != null) {
+                try {
+                    Set<String> traduccionesPalabra2;
+                    traduccionesPalabra2 = this.buscarLengua2(palabra2);
+                    traduccionesPalabra2.remove("");
+                    if (!traduccionesPalabra2.isEmpty())
+                        palabrasLengua2SinTraduccion.remove(palabra2);
+                    if (palabrasLengua2SinTraduccion.isEmpty())
+                        this.map.remove("");
+                } catch (Exception e) {}
+            }
         }
     }
 }
